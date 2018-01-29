@@ -17,7 +17,7 @@ function setup() {
     rows = h / scl;
     angleMode(DEGREES);
     colorMode(HSB);
-    speedSlider = createSlider(0.0001, 1, 0.005, 0.0001);
+    speedSlider = createSlider(0.0001, 1, 0.5, 0.0001);
     speedValSpan = createSpan(speedSlider.value());
     speedSlider.changed(updateSpeedVal);
 
