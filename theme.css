@@ -18,6 +18,11 @@ body {
     color: #fff;
 }
 
+.toolbox * {
+    max-height: 30px;
+    margin: 0;
+}
+
 button {
     width: 100%;
     max-height: 30px;

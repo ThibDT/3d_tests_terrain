@@ -1,16 +1,16 @@
 var cols, rows;
 var scl = 20;
-var w = 3600;
-var h = 2000;
-var terrain = [];
+var w = 3000;
+var h = 3000;
+var terrain;
 var distance = 1;
 var orientation = {x:0, y:0};
 var mousePos = {x:0,y:0};
 var speedSlider;
 var toolBox;
 var speedValSpan;
-var pos = {x:600,y:356,z:100};
-var exportBtn;
+var pos = {x:600,y:356,z:2000};
+var importBtn, exportBtn, generateBtn, closeBtn;
 
 function setup() {
     createCanvas(1200, 713, WEBGL);
@@ -18,11 +18,18 @@ function setup() {
     rows = h / scl;
     angleMode(DEGREES);
     colorMode(HSB);
-    speedSlider = createSlider(0.0001, 1, 0.5, 0.0001);
+    speedSlider = createSlider(0.0001, 5, 0.5, 0.0001);
     speedValSpan = createSpan(speedSlider.value());
     speedSlider.changed(updateSpeedVal);
 
+    generateBtn = createButton('Generate new Terrain');
+    importBtn = createButton('Import map');
     exportBtn = createButton('Export map');
+    closeBtn = createButton('Close map');
+    exportBtn.mousePressed(downloadMap);
+    importBtn.mousePressed(importMap);
+    generateBtn.mousePressed(generateTerrain);
+    closeBtn.mousePressed(closeTerrain);
     toolBox = createDiv('');
 
     toolBox.addClass('toolbox');
@@ -30,26 +37,10 @@ function setup() {
     toolBox.child(speedSlider);
     toolBox.child(speedValSpan);
     toolBox.child(exportBtn);
-    for (var x = 0; x < cols; x++) {
-        terrain[x] = []
-        for (var y = 0; y < rows; y++) {
-            terrain[x][y] = {
-                alt:0,
-                color: color(255)
-            };
-        }
-    }
-    var yoff = 0;
-    for (var y = 0; y < rows; y++) {
-        var xoff = 0;
-        for (var x = 0; x < cols; x++) {
-            terrain[x][y].alt = map(noise(xoff, yoff), 0, 1, 0, 100);
-            var hue = parseInt(terrain[x][y].alt)*1.55;
-            terrain[x][y].color = color(hue, 100, 90);
-            xoff += 0.2;
-        }
-        yoff += 0.2;
-    }
+    toolBox.child(importBtn);
+    toolBox.child(generateBtn);
+    toolBox.child(closeBtn);
+    //generateTerrain();
 }
 
 function draw() {
@@ -59,7 +50,6 @@ function draw() {
     fill(0, 0, 0, 175);
     stroke(255);
     scale(1/distance);
-    print(distance);
     translate(-pos.x, -pos.y, -pos.z);
     if (keyIsPressed === true) {
         var x1Offset = 2*cos(orientation.x - 90);
@@ -105,15 +95,17 @@ function draw() {
             mousePos.y = mouseY;
         }
     }
-    for(var y = 0; y < rows-1; y++) {
-        beginShape(TRIANGLE_STRIP);
-        for (var x = 0; x < cols; x++) {
-            fill(terrain[x][y].color);
-            noStroke();
-            vertex(x*scl, y*scl, terrain[x][y].alt);
-            vertex(x*scl, (y+1)*scl, terrain[x][y+1].alt)
+    if(terrain !== undefined) {
+        for(var y = 0; y < terrain[0].length-1; y++) {
+            beginShape(TRIANGLE_STRIP);
+            for (var x = 0; x < terrain.length; x++) {
+                fill(color(terrain[x][y].color));
+                noStroke();
+                vertex(x*scl, y*scl, terrain[x][y].alt);
+                vertex(x*scl, (y+1)*scl, terrain[x][y+1].alt)
+            }
+            endShape();
         }
-        endShape();
     }
 }
 
@@ -135,4 +127,55 @@ function mousePressed(event) {
 
 function updateSpeedVal() {
     speedValSpan.html(speedSlider.value());
+}
+
+function downloadMap() {
+    var jsonTerrain = JSON.stringify(terrain);
+    var filename = "map.json";
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonTerrain));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function importMap() {
+    loadJSON('map.json', function(map) {
+        terrain = map;
+    });
+
+}
+
+function generateTerrain() {
+    noiseSeed(parseInt(random(0, 10000)));
+    var yoff = 0;
+    var xoff = 0;
+    terrain = [];
+    for (var x = 0; x < cols; x++) {
+        terrain[x] = [];
+        for (var y = 0; y < rows; y++) {
+            terrain[x][y] = {
+                alt:0,
+                color: color(255)
+            };
+        }
+    }
+    for (var y = 0; y < rows; y++) {
+        xoff = 0;
+        for (var x = 0; x < cols; x++) {
+            terrain[x][y].alt = map(noise(xoff, yoff), 0, 1, 0, 1000);
+            terrain[x][y].color = 'hsb('+parseInt(terrain[x][y].alt%360)+', 100%, 90%)';
+            xoff += 0.01;
+        }
+        yoff += 0.01;
+    }
+}
+
+function closeTerrain() {
+    terrain = undefined;
 }
