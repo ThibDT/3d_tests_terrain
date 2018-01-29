@@ -10,6 +10,7 @@ var speedSlider;
 var toolBox;
 var speedValSpan;
 var pos = {x:600,y:356,z:100};
+var exportBtn;
 
 function setup() {
     createCanvas(1200, 713, WEBGL);
@@ -21,13 +22,14 @@ function setup() {
     speedValSpan = createSpan(speedSlider.value());
     speedSlider.changed(updateSpeedVal);
 
-
+    exportBtn = createButton('Export map');
     toolBox = createDiv('');
 
     toolBox.addClass('toolbox');
     toolBox.child(createSpan('Speed: '));
     toolBox.child(speedSlider);
     toolBox.child(speedValSpan);
+    toolBox.child(exportBtn);
     for (var x = 0; x < cols; x++) {
         terrain[x] = []
         for (var y = 0; y < rows; y++) {
@@ -42,8 +44,8 @@ function setup() {
         var xoff = 0;
         for (var x = 0; x < cols; x++) {
             terrain[x][y].alt = map(noise(xoff, yoff), 0, 1, 0, 100);
-            var hue = parseInt(terrain[x][y].alt)*1.75;
-            terrain[x][y].color = color(hue, 100, 100);
+            var hue = parseInt(terrain[x][y].alt)*1.55;
+            terrain[x][y].color = color(hue, 100, 90);
             xoff += 0.2;
         }
         yoff += 0.2;

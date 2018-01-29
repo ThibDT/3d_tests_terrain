@@ -18,10 +18,14 @@ body {
     color: #fff;
 }
 
+button {
+    width: 100%;
+    max-height: 30px;
+}
 canvas {
     box-shadow: 0 0 15px #8c8c8c;
 }
 
 input {
-    height: 15px;
+    max-height: 15px;
 }
