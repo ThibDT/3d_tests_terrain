@@ -25,3 +25,6 @@ You can find its repository [here](https://github.com/CodingTrain/Rainbow-Code/t
 
 **mousewheel**: zoom in/out
 
+
+### Demo
+[Github Pages](https://thibdt.github.io/3d_tests_terrain/)
