@@ -16,7 +16,7 @@ function setup() {
     cols = w / scl;
     rows = h / scl;
     angleMode(DEGREES);
-    //colorMode(HSB);
+    colorMode(HSB);
     speedSlider = createSlider(0.0001, 1, 0.005, 0.0001);
     speedValSpan = createSpan(speedSlider.value());
     speedSlider.changed(updateSpeedVal);
@@ -42,7 +42,8 @@ function setup() {
         var xoff = 0;
         for (var x = 0; x < cols; x++) {
             terrain[x][y].alt = map(noise(xoff, yoff), 0, 1, 0, 100);
-            terrain[x][y].color = color(terrain[x][y].alt*2.5, terrain[x][y].alt*2.5, terrain[x][y].alt*2.5);
+            var hue = parseInt(terrain[x][y].alt)*1.75;
+            terrain[x][y].color = color(hue, 100, 100);
             xoff += 0.2;
         }
         yoff += 0.2;
