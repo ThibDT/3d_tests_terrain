@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    background-color: #515151;
+}
+
+.toolbox {
+    width: 290px;
+    border: 1px solid black;
+    order: 2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+    color: #fff;
+}
+
+canvas {
+    box-shadow: 0 0 15px #8c8c8c;
+}
+
+input {
+    height: 15px;
+}
